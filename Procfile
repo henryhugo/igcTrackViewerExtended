@@ -1,1 +1,1 @@
-web: igcTrackViewer
+web: igcTrackViewerExtended
