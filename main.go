@@ -109,7 +109,8 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			if pathtrack.MatchString(r.URL.Path) {
 				//deal with the array
-				json.NewEncoder(w).Encode(ids)
+				//json.NewEncoder(w).Encode(ids)
+				fmt.Fprintln(w, ids)
 
 			}
 			if parts[4] != "" && parts[5] == "" {
