@@ -114,8 +114,8 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			case pathTrack.MatchString(r.URL.Path):
 				{
 					//deal with the array
-					//json.NewEncoder(w).Encode(ids)
-					fmt.Fprintln(w, "case track")
+					json.NewEncoder(w).Encode(ids)
+					//fmt.Fprintln(w, "case track")
 				}
 
 			case pathId.MatchString(r.URL.Path):
