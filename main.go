@@ -215,7 +215,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 var path, _ = regexp.Compile("/paragliding[/]{1}$")
-var pathTrack, _ = regexp.Compile("/paragliding/api/track$")
+var pathTrack, _ = regexp.Compile("/paragliding/api/track[/]{1}$")
 var pathId, _ = regexp.Compile("/paragliding/api/track/id[0-9]+$")
 var pathField, _ = regexp.Compile("/paragliding/api/track/id[0-9]+/(pilot$|glider$|glider_id$|H_date$|track_src_url$)")
 
