@@ -100,8 +100,8 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			//GET case
 			http.Header.Add(w.Header(), "content-type", "application/json")
 			parts := strings.Split(r.URL.Path, "/")
-			//fmt.Fprintf(w, "longueur : %d\n", len(parts))
-			//fmt.Fprintln(w, parts)
+			fmt.Fprintf(w, "longueur : %d\n", len(parts))
+			fmt.Fprintln(w, parts)
 			if len(parts) < 5 || len(parts) > 6 {
 				//deal with errors
 				fmt.Fprintln(w, "wrong numbers of parameters")
@@ -144,8 +144,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			if parts[5] != "" && parts[4] != "" {
 				//TODO parse field track_lenghtto float64, return the value asked
 				fmt.Fprintln(w, parts)
-				fmt.Fprintln(w, parts[4])
-				fmt.Fprintln(w, parts[5])
+
 				/*infoWanted := parts[5]
 				id := parts[4]*/
 
