@@ -102,11 +102,11 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			parts := strings.Split(r.URL.Path, "/")
 			//fmt.Fprintf(w, "longueur : %d\n", len(parts))
 			//fmt.Fprintln(w, parts)
-			if len(parts) < 5 || len(parts) > 6 {
+			/*if len(parts) < 5 || len(parts) > 6 {
 				//deal with errors
 				fmt.Fprintln(w, "wrong numbers of parameters")
 				return
-			}
+			}*/
 			if pathtrack.MatchString(r.URL.Path) {
 				//deal with the array
 				//json.NewEncoder(w).Encode(ids)
@@ -213,7 +213,7 @@ func main() {
 	db = igcDB{}
 	db.igcs = map[string]igcFile{}
 	idCount = 0
-	ids = nil
+	//ids = nil
 	port := os.Getenv("PORT")
 	http.HandleFunc("/", router)
 	http.HandleFunc("/paragliding/api", getApi)
