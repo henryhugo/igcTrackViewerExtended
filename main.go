@@ -159,7 +159,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 						igcT.Glider = track.GliderType
 						igcT.Glider_id = track.GliderID
 						igcT.Pilot = track.Pilot
-						igcT.Track_length = track.Task.Start.Distance()
+						igcT.Track_length = track.Task.Distance()
 						igcT.H_date = track.Date.String()
 						igcT.Track_src_url = igcWanted.Url
 						json.NewEncoder(w).Encode(igcT)
