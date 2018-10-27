@@ -11,7 +11,16 @@ import (
 
 	igc "github.com/marni/goigc"
 )
+type ticker struct {
+	T_latest string //"t_latest": <latest added timestamp>,
+	T_start string //"t_start": <the first timestamp of the added track>, this will be the oldest track recorded
+	T-stop string //"t_stop": <the last timestamp of the added track>, this might equal to t_latest if there are no more tracks left
+	Tracks []string //"tracks": [<id1>, <id2>, ...],
+	Processing string //"processing": <time in ms of how long it took to process the request>
 
+
+
+}
 type igcTrack struct {
 	H_date        string  //"H_date": <date from File Header, H-record>,
 	Pilot         string  //"pilot": <pilot>,
@@ -151,7 +160,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 						igcT.Glider = track.GliderType
 						igcT.Glider_id = track.GliderID
 						igcT.Pilot = track.Pilot
-						igcT.Track_length = track.Task.Distance()
+						igcT.Track_length = track.Task.Start.Distance()
 						igcT.H_date = track.Date.String()
 						igcT.Track_src_url = igcWanted.Url
 						json.NewEncoder(w).Encode(igcT)
@@ -216,7 +225,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 var path, _ = regexp.Compile("/paragliding[/]{1}$")
-var pathTrack, _ = regexp.Compile("/paragliding/api/track$")
+var pathTrack, _ = regexp.Compile("/paragliding/api/track[/]{1}$")
 var pathId, _ = regexp.Compile("/paragliding/api/track/id[0-9]+$")
 var pathField, _ = regexp.Compile("/paragliding/api/track/id[0-9]+/(pilot$|glider$|glider_id$|H_date$|track_src_url$)")
 
