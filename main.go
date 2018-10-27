@@ -201,7 +201,7 @@ func main() {
 	idCount = 0
 	ids = nil
 	port := os.Getenv("PORT")
-	http.HandleFunc("/paragliding", getApi)
+	http.HandleFunc("/paragliding[/]{1}$", getApi)
 	http.HandleFunc("/paragliding/api", getApi)
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
 	http.ListenAndServe(":"+port, nil)
