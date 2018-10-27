@@ -165,7 +165,7 @@ func main() {
 	db = igcDB{}
 	db.igcs = map[string]igcFile{}
 	idCount = 0
-	ids = nil
+	//ids = nil
 	port := os.Getenv("PORT")
 	http.HandleFunc("/paragliding/api", getApi)
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
