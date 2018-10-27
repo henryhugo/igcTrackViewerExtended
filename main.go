@@ -107,12 +107,17 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintln(w, "wrong numbers of parameters")
 				return
 			}*/
-			if pathtrack.MatchString(r.URL.Path) {
-				//deal with the array
-				//json.NewEncoder(w).Encode(ids)
-				fmt.Fprintln(w, "case track")
-
+			switch {
+			case pathtrack.MatchString(r.URL.Path):
+				{
+					//deal with the array
+					//json.NewEncoder(w).Encode(ids)
+					fmt.Fprintln(w, "case track")
+				}
+			default:
+				http.NotFound(w, r)
 			}
+
 			if parts[4] != "" && parts[5] == "" {
 				fmt.Fprintln(w, "Information about the id")
 				//deal with the id
