@@ -110,7 +110,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 				json.NewEncoder(w).Encode(ids)
 
 			}
-			if parts[4] != "" {
+			if parts[4] != "" && parts[5] == "" {
 				fmt.Fprintln(w, "Information about the id")
 				fmt.Fprintln(w, parts)
 				fmt.Fprintln(w, parts[4])
