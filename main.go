@@ -217,6 +217,6 @@ func main() {
 	port := os.Getenv("PORT")
 	http.HandleFunc("/", router)
 	http.HandleFunc("/paragliding/api", getApi)
-	http.HandleFunc("/paragliding/api/track/", igcHandler)
+	http.HandleFunc("/paragliding/api/track", igcHandler)
 	http.ListenAndServe(":"+port, nil)
 }
