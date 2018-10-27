@@ -106,7 +106,8 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintln(w, "igc file already in database")
 					return
 				} else {
-					fmt.Fprintf(w, "URL : %s\n", igc.Url)
+					timestamp = time.Now().Second() * 1000
+					//fmt.Fprintf(w, "URL : %s\n", igc.Url)
 					Idstr := "id"
 					strValue := fmt.Sprintf("%d", idCount)
 					newId := Idstr + strValue
@@ -141,7 +142,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 
 			case pathId.MatchString(r.URL.Path):
 				{
-					fmt.Fprintln(w, "Information about the id")
+					//fmt.Fprintln(w, "Information about the id")
 					//deal with the id
 					var igcWanted igcFile
 					rgx, _ := regexp.Compile("^id[0-9]*")
@@ -228,6 +229,8 @@ var pathTrack, _ = regexp.Compile("/paragliding/api/track[/]{1}$")
 var pathId, _ = regexp.Compile("/paragliding/api/track/id[0-9]+$")
 var pathField, _ = regexp.Compile("/paragliding/api/track/id[0-9]+/(pilot$|glider$|glider_id$|H_date$|track_src_url$)")
 
+//var pathTicker, _ = regexp.Compile("/paragliding/api/ticker$")
+
 func router(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case path.MatchString(r.URL.Path):
@@ -239,9 +242,14 @@ func router(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func tickerHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, timestamp)
+}
+
 var db igcDB
 var ids []string
 var idCount int
+var timestamp int
 
 func main() {
 	db = igcDB{}
@@ -252,5 +260,6 @@ func main() {
 	http.HandleFunc("/", router)
 	http.HandleFunc("/paragliding/api", getApi)
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
+	http.HandleFunc("paragliding/api/ticker", tickerHandler)
 	http.ListenAndServe(":"+port, nil)
 }
