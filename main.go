@@ -177,8 +177,8 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					}
 				case "track_src_url":
 					{
-						igcT.Track_src_url = igcWanted.Url
-						json.NewEncoder(w).Encode(igcT.Track_src_url)
+						igcT.Track_src_url = igcW.Url
+						json.NewEncoder(w).Encode(igcW.Url)
 					}
 				}
 			}
