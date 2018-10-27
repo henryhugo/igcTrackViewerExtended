@@ -239,7 +239,7 @@ func main() {
 	db = igcDB{}
 	db.igcs = map[string]igcFile{}
 	idCount = 0
-	//ids = nil
+	ids = []string{}
 	port := os.Getenv("PORT")
 	http.HandleFunc("/", router)
 	http.HandleFunc("/paragliding/api", getApi)
