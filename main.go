@@ -108,87 +108,90 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}*/
 			switch {
-			case pathtrack.MatchString(r.URL.Path):
+			case pathTrack.MatchString(r.URL.Path):
 				{
 					//deal with the array
 					//json.NewEncoder(w).Encode(ids)
 					fmt.Fprintln(w, "case track")
 				}
-			default:
-				http.NotFound(w, r)
-			}
 
-			if parts[4] != "" && parts[5] == "" {
-				fmt.Fprintln(w, "Information about the id")
-				//deal with the id
-				var igcWanted igcFile
-				rgx, _ := regexp.Compile("^id[0-9]*")
-				id := parts[4]
-				if rgx.MatchString(id) == true {
-					igcWanted = db.Get(id)
+			case pathId.MatchString(r.URL.Path):
+				{
+					fmt.Fprintln(w, "Information about the id")
+					//deal with the id
+					var igcWanted igcFile
+					rgx, _ := regexp.Compile("^id[0-9]*")
+					id := parts[4]
+					if rgx.MatchString(id) == true {
+						igcWanted = db.Get(id)
 
-					//then encode the igcFile
-					url := igcWanted.Url
+						//then encode the igcFile
+						url := igcWanted.Url
+						track, err := igc.ParseLocation(url)
+						if err != nil {
+							//fmt.Errorf("Problem reading the track", err)
+						}
+						igcT := igcTrack{}
+						igcT.Glider = track.GliderType
+						igcT.Glider_id = track.GliderID
+						igcT.Pilot = track.Pilot
+						igcT.Track_length = track.Task.Distance()
+						igcT.H_date = track.Date.String()
+						igcT.Track_src_url = igcWanted.Url
+						json.NewEncoder(w).Encode(igcT)
+					}
+					if rgx.MatchString(id) == false {
+						fmt.Fprintln(w, "Use format id0 or id21 for exemple")
+					}
+				}
+			case pathField.MatchString(r.URL.Path):
+				{
+					//TODO parse field track_lenghtto float64, return the value asked
+					//fmt.Fprintln(w, parts)
+					var igcW igcFile
+					infoWanted := parts[5]
+					id := parts[4]
+					igcW = db.Get(id)
+					url := igcW.Url
 					track, err := igc.ParseLocation(url)
 					if err != nil {
 						//fmt.Errorf("Problem reading the track", err)
 					}
 					igcT := igcTrack{}
-					igcT.Glider = track.GliderType
-					igcT.Glider_id = track.GliderID
-					igcT.Pilot = track.Pilot
-					igcT.Track_length = track.Task.Distance()
-					igcT.H_date = track.Date.String()
-					igcT.Track_src_url = igcWanted.Url
-					json.NewEncoder(w).Encode(igcT)
-				}
-				if rgx.MatchString(id) == false {
-					fmt.Fprintln(w, "Use format id0 or id21 for exemple")
-				}
-			}
-			if parts[5] != "" && parts[4] != "" {
-				//TODO parse field track_lenghtto float64, return the value asked
-				//fmt.Fprintln(w, parts)
-				var igcW igcFile
-				infoWanted := parts[5]
-				id := parts[4]
-				igcW = db.Get(id)
-				url := igcW.Url
-				track, err := igc.ParseLocation(url)
-				if err != nil {
-					//fmt.Errorf("Problem reading the track", err)
-				}
-				igcT := igcTrack{}
-				switch infoWanted {
-				case "pilot":
-					{
-						igcT.Pilot = track.Pilot
-						json.NewEncoder(w).Encode(igcT.Pilot)
-					}
-				case "glider":
-					{
-						igcT.Glider = track.GliderType
-						json.NewEncoder(w).Encode(igcT.Glider)
-					}
-				case "glider_id":
-					{
-						igcT.Glider_id = track.GliderID
-						json.NewEncoder(w).Encode(igcT.Glider_id)
-					}
-				case "H_date":
-					{
-						igcT.H_date = track.Date.String()
-						json.NewEncoder(w).Encode(igcT.H_date)
-					}
-				case "track_src_url":
-					{
-						igcT.Track_src_url = igcW.Url
-						json.NewEncoder(w).Encode(igcW.Url)
+					switch infoWanted {
+					case "pilot":
+						{
+							igcT.Pilot = track.Pilot
+							json.NewEncoder(w).Encode(igcT.Pilot)
+						}
+					case "glider":
+						{
+							igcT.Glider = track.GliderType
+							json.NewEncoder(w).Encode(igcT.Glider)
+						}
+					case "glider_id":
+						{
+							igcT.Glider_id = track.GliderID
+							json.NewEncoder(w).Encode(igcT.Glider_id)
+						}
+					case "H_date":
+						{
+							igcT.H_date = track.Date.String()
+							json.NewEncoder(w).Encode(igcT.H_date)
+						}
+					case "track_src_url":
+						{
+							igcT.Track_src_url = igcW.Url
+							json.NewEncoder(w).Encode(igcW.Url)
+						}
 					}
 				}
+			default:
+				http.NotFound(w, r)
 			}
 
 		}
+
 	default:
 
 		http.Error(w, "not implemented yet", http.StatusNotImplemented)
@@ -197,7 +200,9 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 var path, _ = regexp.Compile("/paragliding[/]{1}$")
-var pathtrack, _ = regexp.Compile("/paragliding/api/track[/]{1}$")
+var pathTrack, _ = regexp.Compile("/paragliding/api/track$")
+var pathId, _ = regexp.Compile("/paragliding/api/track/^id[0-9]*")
+var pathField, _ = regexp.Compile("/paragliding/api/track/^id[0-9]*/(pilot|glider|glider_id|H_date|track_src_url)")
 
 func router(w http.ResponseWriter, r *http.Request) {
 	switch {
