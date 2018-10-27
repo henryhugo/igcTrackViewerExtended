@@ -57,6 +57,15 @@ func (db igcDB) Get(idWanted string) igcFile {
 	return igcFile{}
 }
 
+func (db igcDB) isInDb(fileW igcFile) bool {
+	for _, file := range db.igcs {
+		if file.Url == fileW.Url {
+			return true
+		}
+	}
+	return false
+}
+
 func getApi(w http.ResponseWriter, r *http.Request) {
 	http.Header.Add(w.Header(), "content-type", "application/json")
 	//io.WriteString(w, "Api information :\n")
@@ -85,15 +94,18 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusBadRequest)
 				}
-
-				fmt.Fprintf(w, "URL : %s\n", igc.Url)
-				Idstr := "id"
-				strValue := fmt.Sprintf("%d", idCount)
-				newId := Idstr + strValue
-				ids = append(ids, newId)
-				idCount += 1
-				db.add(igc, newId)
-				json.NewEncoder(w).Encode(newId)
+				if db.isInDb(igc) == true {
+					return
+				} else {
+					fmt.Fprintf(w, "URL : %s\n", igc.Url)
+					Idstr := "id"
+					strValue := fmt.Sprintf("%d", idCount)
+					newId := Idstr + strValue
+					ids = append(ids, newId)
+					idCount += 1
+					db.add(igc, newId)
+					json.NewEncoder(w).Encode(newId)
+				}
 			} else {
 				http.NotFound(w, r)
 			}
@@ -203,7 +215,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 var path, _ = regexp.Compile("/paragliding[/]{1}$")
-var pathTrack, _ = regexp.Compile("/paragliding/api/track[/]{1}$")
+var pathTrack, _ = regexp.Compile("/paragliding/api/track$")
 var pathId, _ = regexp.Compile("/paragliding/api/track/id[0-9]+$")
 var pathField, _ = regexp.Compile("/paragliding/api/track/id[0-9]+/(pilot$|glider$|glider_id$|H_date$|track_src_url$)")
 
