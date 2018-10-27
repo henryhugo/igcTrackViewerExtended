@@ -5,11 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"regexp"
 	"strings"
 	"time"
-
-	igc "github.com/marni/goigc"
 )
 
 type igcTrack struct {
@@ -137,11 +134,11 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					igcT.Track_length = track.Task.Distance()
 					igcT.H_date = track.Date.String()
 					igcT.Track_src_url = igcWanted.Url
-					json.NewEncoder(w).Encode(igcT)*/
+					json.NewEncoder(w).Encode(igcT)
 				}
 				if rgx.MatchString(id) == false {
 					fmt.Fprintln(w, "Use format id0 or id21 for exemple")
-				}
+				}*/
 			}
 			if parts[5] != "" && parts[4] != "" {
 				//TODO parse field track_lenghtto float64, return the value asked
