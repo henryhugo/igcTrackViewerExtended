@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
+
+	igc "github.com/marni/goigc"
 )
 
 type igcTrack struct {
@@ -112,10 +115,8 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			if parts[4] != "" && parts[5] == "" {
 				fmt.Fprintln(w, "Information about the id")
-				fmt.Fprintln(w, parts)
-				fmt.Fprintln(w, parts[4])
 				//deal with the id
-				/*var igcWanted igcFile
+				var igcWanted igcFile
 				rgx, _ := regexp.Compile("^id[0-9]*")
 				id := parts[4]
 				if rgx.MatchString(id) == true {
@@ -138,15 +139,48 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				if rgx.MatchString(id) == false {
 					fmt.Fprintln(w, "Use format id0 or id21 for exemple")
-				}*/
+				}
 			}
 			if parts[5] != "" && parts[4] != "" {
 				//TODO parse field track_lenghtto float64, return the value asked
-				fmt.Fprintln(w, parts)
-
-				/*infoWanted := parts[5]
-				id := parts[4]*/
-
+				//fmt.Fprintln(w, parts)
+				var igcW igcFile
+				infoWanted := parts[5]
+				id := parts[4]
+				igcW = db.Get(id)
+				url := igcW.Url
+				track, err := igc.ParseLocation(url)
+				if err != nil {
+					//fmt.Errorf("Problem reading the track", err)
+				}
+				igcT := igcTrack{}
+				switch infoWanted {
+				case "pilot":
+					{
+						igcT.Pilot = track.Pilot
+						json.NewEncoder(w).Encode(igcT.Pilot)
+					}
+				case "glider":
+					{
+						igcT.Glider = track.GliderType
+						json.NewEncoder(w).Encode(igcT.Glider)
+					}
+				case "glider_id":
+					{
+						igcT.Glider_id = track.GliderID
+						json.NewEncoder(w).Encode(igcT.Glider_id)
+					}
+				case "H_date":
+					{
+						igcT.H_date = track.Date.String()
+						json.NewEncoder(w).Encode(igcT.H_date)
+					}
+				case "track_src_url":
+					{
+						igcT.Track_src_url = igcWanted.Url
+						json.NewEncoder(w).Encode(igcT.Track_src_url)
+					}
+				}
 			}
 
 		}
@@ -165,7 +199,7 @@ func main() {
 	db = igcDB{}
 	db.igcs = map[string]igcFile{}
 	idCount = 0
-	//ids = nil
+	ids = nil
 	port := os.Getenv("PORT")
 	http.HandleFunc("/paragliding/api", getApi)
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
