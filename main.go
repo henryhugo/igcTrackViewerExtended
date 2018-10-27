@@ -106,8 +106,9 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintln(w, "igc file already in database")
 					return
 				} else {
-					timestamp = time.Now().Second() * 1000
-					//fmt.Fprintf(w, "URL : %s\n", igc.Url)
+					t0 := time.Now()
+					timestamp = t0.Nanosecond()
+					fmt.Fprintf(w, "URL : %s\n", igc.Url)
 					Idstr := "id"
 					strValue := fmt.Sprintf("%d", idCount)
 					newId := Idstr + strValue
