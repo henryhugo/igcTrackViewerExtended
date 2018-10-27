@@ -141,13 +141,15 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintln(w, "Use format id0 or id21 for exemple")
 				}
 			}
-			/*if parts[5] != "" && parts[4] != ""  {
+			if parts[5] != "" && parts[4] != "" {
 				//TODO parse field track_lenghtto float64, return the value asked
-
+				fmt.Fprintln(w, parts)
+				fmt.Fprintln(w, parts[4])
+				fmt.Fprintln(w, parts[5])
 				/*infoWanted := parts[5]
-				id := parts[4]
+				id := parts[4]*/
 
-			}*/
+			}
 
 		}
 	default:
