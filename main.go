@@ -100,8 +100,8 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			//GET case
 			http.Header.Add(w.Header(), "content-type", "application/json")
 			parts := strings.Split(r.URL.Path, "/")
-			fmt.Fprintf(w, "longueur : %d\n", len(parts))
-			fmt.Fprintln(w, parts)
+			//fmt.Fprintf(w, "longueur : %d\n", len(parts))
+			//fmt.Fprintln(w, parts)
 			if len(parts) < 5 || len(parts) > 6 {
 				//deal with errors
 				fmt.Fprintln(w, "wrong numbers of parameters")
@@ -115,8 +115,10 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			if parts[4] != "" {
 				fmt.Fprintln(w, "Information about the id")
+				fmt.Fprintln(w, parts)
+				fmt.Fprintln(w, parts[4])
 				//deal with the id
-				var igcWanted igcFile
+				/*var igcWanted igcFile
 				rgx, _ := regexp.Compile("^id[0-9]*")
 				id := parts[4]
 				if rgx.MatchString(id) == true {
@@ -135,7 +137,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					igcT.Track_length = track.Task.Distance()
 					igcT.H_date = track.Date.String()
 					igcT.Track_src_url = igcWanted.Url
-					json.NewEncoder(w).Encode(igcT)
+					json.NewEncoder(w).Encode(igcT)*/
 				}
 				if rgx.MatchString(id) == false {
 					fmt.Fprintln(w, "Use format id0 or id21 for exemple")
