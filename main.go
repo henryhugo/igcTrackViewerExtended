@@ -199,6 +199,8 @@ func router(w http.ResponseWriter, r *http.Request) {
 		{
 			getApi(w, r)
 		}
+	default:
+		http.NotFound(w, r)
 	}
 }
 
