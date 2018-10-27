@@ -107,7 +107,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintln(w, "wrong numbers of parameters")
 				return
 			}
-			if parts[4] == "" {
+			if pathtrack.MatchString(r.URL.Path) {
 				//deal with the array
 				json.NewEncoder(w).Encode(ids)
 
@@ -191,6 +191,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 var path, _ = regexp.Compile("/paragliding[/]{1}$")
+var pathtrack, _ = regexp.Compile("/paragliding/api/track[/]{1}$")
 
 func router(w http.ResponseWriter, r *http.Request) {
 	switch {
