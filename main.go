@@ -110,7 +110,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			if pathtrack.MatchString(r.URL.Path) {
 				//deal with the array
 				//json.NewEncoder(w).Encode(ids)
-				fmt.Fprintln(w, ids)
+				fmt.Fprintln(w, "case track")
 
 			}
 			if parts[4] != "" && parts[5] == "" {
@@ -213,10 +213,10 @@ func main() {
 	db = igcDB{}
 	db.igcs = map[string]igcFile{}
 	idCount = 0
-	//ids = nil
+	ids = nil
 	port := os.Getenv("PORT")
 	http.HandleFunc("/", router)
 	http.HandleFunc("/paragliding/api", getApi)
-	http.HandleFunc("/paragliding/api/track", igcHandler)
+	http.HandleFunc("/paragliding/api/track/", igcHandler)
 	http.ListenAndServe(":"+port, nil)
 }
