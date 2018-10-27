@@ -95,6 +95,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusBadRequest)
 				}
 				if db.isInDb(igc) == true {
+					fmt.Fprintln(w, "igc file already in database")
 					return
 				} else {
 					fmt.Fprintf(w, "URL : %s\n", igc.Url)
