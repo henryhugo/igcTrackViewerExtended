@@ -191,6 +191,17 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+var path, _ = regexp.Compile("/paragliding[/]{1}$")
+
+func router(w http.ResponseWriter, r *http.Request) {
+	switch {
+	case path.MatchString(r.URL.Path):
+		{
+			getApi(w, r)
+		}
+	}
+}
+
 var db igcDB
 var ids []string
 var idCount int
@@ -201,7 +212,7 @@ func main() {
 	idCount = 0
 	ids = nil
 	port := os.Getenv("PORT")
-	http.HandleFunc("/paragliding[/]{1}$", getApi)
+	http.HandleFunc("/paragliding", router)
 	http.HandleFunc("/paragliding/api", getApi)
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
 	http.ListenAndServe(":"+port, nil)
