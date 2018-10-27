@@ -13,11 +13,12 @@ import (
 )
 
 type igcTrack struct {
-	H_date       string  //"H_date": <date from File Header, H-record>,
-	Pilot        string  //"pilot": <pilot>,
-	Glider       string  //"glider": <glider>,
-	Glider_id    string  //"glider_id": <glider_id>,
-	Track_length float64 //"track_length": <calculated total track length>
+	H_date        string  //"H_date": <date from File Header, H-record>,
+	Pilot         string  //"pilot": <pilot>,
+	Glider        string  //"glider": <glider>,
+	Glider_id     string  //"glider_id": <glider_id>,
+	Track_length  float64 //"track_length": <calculated total track length>
+	Track_src_url string  //"track_src_url": <the original URL used to upload the track, ie. the URL used with POST>
 }
 
 type API struct {
@@ -133,6 +134,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					igcT.Pilot = track.Pilot
 					igcT.Track_length = track.Task.Distance()
 					igcT.H_date = track.Date.String()
+					igcT.Track_src_url = igcWanted.Url
 					json.NewEncoder(w).Encode(igcT)
 				}
 				if rgx.MatchString(id) == false {
@@ -165,7 +167,7 @@ func main() {
 	idCount = 0
 	ids = nil
 	port := os.Getenv("PORT")
-	http.HandleFunc("/igcinfo/api", getApi)
-	http.HandleFunc("/igcinfo/api/igc/", igcHandler)
+	http.HandleFunc("/paragliging/api", getApi)
+	http.HandleFunc("/paragliding/api/track/", igcHandler)
 	http.ListenAndServe(":"+port, nil)
 }
