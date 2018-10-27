@@ -74,26 +74,29 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		{
+			if pathTrack.MatchString(r.URL.Path) {
+				if r.Body == nil {
+					http.Error(w, "no JSON body", http.StatusBadRequest)
+					return
+				}
+				var igc igcFile
+				//TODO check correct igc URL
+				err := json.NewDecoder(r.Body).Decode(&igc)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+				}
 
-			if r.Body == nil {
-				http.Error(w, "no JSON body", http.StatusBadRequest)
-				return
+				fmt.Fprintf(w, "URL : %s\n", igc.Url)
+				Idstr := "id"
+				strValue := fmt.Sprintf("%d", idCount)
+				newId := Idstr + strValue
+				ids = append(ids, newId)
+				idCount += 1
+				db.add(igc, newId)
+				json.NewEncoder(w).Encode(newId)
+			} else {
+				http.NotFound(w, r)
 			}
-			var igc igcFile
-			//TODO check correct igc URL
-			err := json.NewDecoder(r.Body).Decode(&igc)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-			}
-
-			fmt.Fprintf(w, "URL : %s\n", igc.Url)
-			Idstr := "id"
-			strValue := fmt.Sprintf("%d", idCount)
-			newId := Idstr + strValue
-			ids = append(ids, newId)
-			idCount += 1
-			db.add(igc, newId)
-			json.NewEncoder(w).Encode(newId)
 		}
 	case "GET":
 		{
