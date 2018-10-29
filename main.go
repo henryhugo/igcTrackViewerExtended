@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -124,17 +125,19 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					json.NewEncoder(w).Encode(newId)
 
 					//send message to webhooks
-					payload := strings.NewReader("{\"text\": \"Ceci est publié dans #général et provient d'un robot nommé webhookbot.\"}")
-					//for _, wh := range whDB {
-					client := &http.Client{Timeout: (time.Second * 30)}
-					req, err := http.NewRequest("POST", "https://hooks.slack.com/services/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", payload)
-					req.Header.Set("Content-Type", "application/json")
-					resp, err := client.Do(req)
-					if err != nil {
-						fmt.Print(err.Error())
+					t_conv := strconv.Itoa(timestamp)
+					text := "{\"text\": \"Timestamp :" + t_conv + ", new track is" + newId + " (processing time is)\"}"
+					payload := strings.NewReader(text)
+					for _, wh := range whDB {
+						client := &http.Client{Timeout: (time.Second * 30)}
+						req, err := http.NewRequest("POST", wh.WebhookURL, payload)
+						req.Header.Set("Content-Type", "application/json")
+						resp, err := client.Do(req)
+						if err != nil {
+							fmt.Print(err.Error())
+						}
+						fmt.Println(resp.Status)
 					}
-					fmt.Println(resp.Status)
-					//}
 					/*****************************/
 					elapsed = time.Since(start).Seconds()
 				}
