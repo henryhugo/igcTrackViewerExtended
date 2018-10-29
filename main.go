@@ -113,6 +113,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintln(w, "igc file already in database")
 					return
 				} else {
+					long = len(times)
 					timestamp = time.Now().Nanosecond()
 					times = append(times, timestamp)
 					fmt.Fprintf(w, "URL : %s\n", igc.Url)
@@ -364,6 +365,7 @@ var timestamp int
 var start time.Time
 var elapsed float64
 var whDB map[string]webhook
+var long int
 
 func main() {
 
@@ -373,6 +375,7 @@ func main() {
 	idCount = 0
 	timestamp = 0
 	times = nil
+	long = 0
 	ids = []string{}
 	port := os.Getenv("PORT")
 	ticker := time.NewTicker(10 * time.Minute)
@@ -380,7 +383,7 @@ func main() {
 		for {
 			select {
 			case <-ticker.C:
-				if timestamp != times[len(times)-1] {
+				if len(times) != long {
 					text := "{\"text\": \"New track added\"}"
 					payload := strings.NewReader(text)
 					for _, wh := range whDB {
@@ -393,6 +396,7 @@ func main() {
 						}
 						fmt.Println(resp.Status)
 					}
+					long += 1
 				}
 			}
 		}
