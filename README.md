@@ -6,9 +6,9 @@ Assignement 2
 
 Develop an online service that will allow users to browse information about IGC files.
 
-## Features not realized
+## Features not realized / problems
 
-MongoDB storage, GET /api/ticker/timestamp, problem with the clock trigger
+MongoDB storage, GET /api/ticker/timestamp, clock trigger implemeted in the .go
 
 
 ## URLs
