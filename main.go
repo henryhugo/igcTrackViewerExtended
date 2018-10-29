@@ -122,6 +122,20 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					idCount += 1
 					db.add(igc, newId)
 					json.NewEncoder(w).Encode(newId)
+
+					//send message to webhooks
+					payload := strings.NewReader("{\"channel\": \"#général\", \"username\": \"webhookbot\", \"text\": \"Ceci est publié dans #général et provient d'un robot nommé webhookbot.\", \"icon_emoji\": \":ghost:\"}")
+					for _, wh := range whDB {
+						client := &http.Client{Timeout: (time.Second * 30)}
+						req, err := http.NewRequest("POST", wh.WebhookURL, payload)
+						req.Header.Set("Content-Type", "application/json")
+						resp, err := client.Do(req)
+						if err != nil {
+							fmt.Print(err.Error())
+						}
+						fmt.Println(resp.Status)
+					}
+					/*****************************/
 					elapsed = time.Since(start).Seconds()
 				}
 
