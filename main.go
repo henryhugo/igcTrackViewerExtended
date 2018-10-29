@@ -248,6 +248,7 @@ var path, _ = regexp.Compile("/paragliding[/]{1}$")
 var pathTrack, _ = regexp.Compile("/paragliding/api/track[/]{1}$")
 var pathId, _ = regexp.Compile("/paragliding/api/track/id[0-9]+$")
 var pathField, _ = regexp.Compile("/paragliding/api/track/id[0-9]+/(pilot$|glider$|glider_id$|H_date$|track_src_url$)")
+var pathwhID, _ = regexp.Compile("/paragliding/api/webhook/new_track/id[0-9]+$")
 
 //var pathTicker, _ = regexp.Compile("/paragliding/api/ticker$")
 
@@ -288,21 +289,38 @@ func tickerHandlerLatest(w http.ResponseWriter, r *http.Request) {
 
 }
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
-	//fmt.Fprintln(w, "wh")
-	var wh webhook
-	//TODO check correct wh format
-	err := json.NewDecoder(r.Body).Decode(&wh)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	}
-	Idstr := "id"
-	strValue := fmt.Sprintf("%d", idCountwh)
-	newId := Idstr + strValue
-	idswh = append(idswh, newId)
-	idCountwh += 1
-	whDB[newId] = wh
-	json.NewEncoder(w).Encode(newId)
+	parts := strings.Split(r.URL.Path, "/")
+	switch r.Method {
+	case "POST":
+		{
+			//fmt.Fprintln(w, "wh")
+			var wh webhook
+			//TODO check correct wh format
+			err := json.NewDecoder(r.Body).Decode(&wh)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+			}
+			Idstr := "id"
+			strValue := fmt.Sprintf("%d", idCountwh)
+			newId := Idstr + strValue
+			idswh = append(idswh, newId)
+			idCountwh += 1
+			whDB[newId] = wh
+			json.NewEncoder(w).Encode(newId)
+		}
+	case "GET":
+		{
+			if pathwhID.MatchString(r.URL.Path) {
+				idWant := parts[5]
+				for id, file := range whDB {
+					if id == idWant {
+						json.NewEncoder(w).Encode(file)
+					}
+				}
 
+			}
+		}
+	}
 }
 
 var db igcDB
