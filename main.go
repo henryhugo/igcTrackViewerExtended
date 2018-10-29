@@ -123,10 +123,11 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					idCount += 1
 					db.add(igc, newId)
 					json.NewEncoder(w).Encode(newId)
-
+					elapsed = time.Since(start).Seconds()
 					//send message to webhooks
 					t_conv := strconv.Itoa(timestamp)
-					text := "{\"text\": \"Timestamp :" + t_conv + ", new track is" + newId + " (processing time is)\"}"
+					e_conv := fmt.Sprintf("%f", elapsed)
+					text := "{\"text\": \"Timestamp :" + t_conv + ", new track is " + newId + " (processing time is " + e_conv + ")\"}"
 					payload := strings.NewReader(text)
 					for _, wh := range whDB {
 						client := &http.Client{Timeout: (time.Second * 30)}
@@ -139,7 +140,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 						fmt.Println(resp.Status)
 					}
 					/*****************************/
-					elapsed = time.Since(start).Seconds()
+
 				}
 
 			} else {
