@@ -343,13 +343,15 @@ func adminCount(w http.ResponseWriter, r *http.Request) {
 }
 
 func adminDel(w http.ResponseWriter, r *http.Request) {
-	delCount := 0
-	ids = []string{}
-	for id, _ := range db.igcs {
-		delete(db.igcs, id)
-		delCount += 1
+	if r.Method == "DELETE" {
+		delCount := 0
+		ids = []string{}
+		for id, _ := range db.igcs {
+			delete(db.igcs, id)
+			delCount += 1
+		}
+		json.NewEncoder(w).Encode(delCount)
 	}
-	json.NewEncoder(w).Encode(delCount)
 }
 
 var db igcDB
@@ -381,7 +383,7 @@ func main() {
 			select {
 			case <-ticker.C:
 				if timestamp != timestampSave {
-					text := "{\"text\": \"New track added)\"}"
+					text := "{\"text\": \"New track added\"}"
 					payload := strings.NewReader(text)
 					for _, wh := range whDB {
 						client := &http.Client{Timeout: (time.Second * 30)}
