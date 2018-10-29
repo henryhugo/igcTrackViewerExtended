@@ -282,7 +282,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	idswh = append(idswh, newId)
 	idCount += 1
 	whDB[newId] = wh
-	json.NewEncoder(w).Encode(newId)
+	//json.NewEncoder(w).Encode(newId)
 
 }
 
