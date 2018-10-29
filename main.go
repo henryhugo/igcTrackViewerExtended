@@ -364,7 +364,6 @@ var timestamp int
 var start time.Time
 var elapsed float64
 var whDB map[string]webhook
-var timestampSave int
 
 func main() {
 
@@ -373,7 +372,6 @@ func main() {
 	db.igcs = map[string]igcFile{}
 	idCount = 0
 	timestamp = 0
-	timestampSave = timestamp
 	times = nil
 	ids = []string{}
 	port := os.Getenv("PORT")
@@ -382,7 +380,7 @@ func main() {
 		for {
 			select {
 			case <-ticker.C:
-				if timestamp != timestampSave {
+				if timestamp != times[len(times)-1] {
 					text := "{\"text\": \"New track added\"}"
 					payload := strings.NewReader(text)
 					for _, wh := range whDB {
