@@ -270,7 +270,8 @@ func tickerHandlerLatest(w http.ResponseWriter, r *http.Request) {
 
 }
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
-	var wh webhook
+	fmt.Fprintln(w, "wh")
+	/*var wh webhook
 	//TODO check correct wh format
 	err := json.NewDecoder(r.Body).Decode(&wh)
 	if err != nil {
@@ -281,7 +282,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	newId := Idstr + strValue
 	idswh = append(idswh, newId)
 	idCount += 1
-	whDB[newId] = wh
+	whDB[newId] = wh*/
 	//json.NewEncoder(w).Encode(newId)
 
 }
