@@ -1,7 +1,9 @@
 # igcTrackViewerExtended
 
 Work realized by Hugo HENRY
+
 Assignement 2
+
 Develop an online service that will allow users to browse information about IGC files.
 
 ## Features not realized
