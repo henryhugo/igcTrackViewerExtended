@@ -13,11 +13,11 @@ import (
 )
 
 type ticker struct {
-	T_latest   string   //"t_latest": <latest added timestamp>,
-	T_start    string   //"t_start": <the first timestamp of the added track>, this will be the oldest track recorded
+	T_latest   int      //"t_latest": <latest added timestamp>,
+	T_start    int      //"t_start": <the first timestamp of the added track>, this will be the oldest track recorded
 	T_stop     string   //"t_stop": <the last timestamp of the added track>, this might equal to t_latest if there are no more tracks left
 	Tracks     []string //"tracks": [<id1>, <id2>, ...],
-	Processing string   //"processing": <time in ms of how long it took to process the request>
+	Processing float64  //"processing": <time in ms of how long it took to process the request>
 
 }
 type igcTrack struct {
@@ -90,6 +90,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "POST":
+		start := time.Now()
 		{
 			if pathTrack.MatchString(r.URL.Path) {
 				if r.Body == nil {
@@ -106,8 +107,8 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintln(w, "igc file already in database")
 					return
 				} else {
-					t0 := time.Now()
-					timestamp = t0.Nanosecond()
+					timestamp = time.Now().Nanosecond()
+					times = append(times, timestamp)
 					fmt.Fprintf(w, "URL : %s\n", igc.Url)
 					Idstr := "id"
 					strValue := fmt.Sprintf("%d", idCount)
@@ -116,7 +117,9 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					idCount += 1
 					db.add(igc, newId)
 					json.NewEncoder(w).Encode(newId)
+					elapsed = time.Since(start).Seconds()
 				}
+
 			} else {
 				http.NotFound(w, r)
 			}
@@ -126,13 +129,6 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 			//GET case
 			http.Header.Add(w.Header(), "content-type", "application/json")
 			parts := strings.Split(r.URL.Path, "/")
-			//fmt.Fprintf(w, "longueur : %d\n", len(parts))
-			//fmt.Fprintln(w, parts)
-			/*if len(parts) < 5 || len(parts) > 6 {
-				//deal with errors
-				fmt.Fprintln(w, "wrong numbers of parameters")
-				return
-			}*/
 			switch {
 			case pathTrack.MatchString(r.URL.Path):
 				{
@@ -244,23 +240,48 @@ func router(w http.ResponseWriter, r *http.Request) {
 }
 
 func tickerHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, timestamp)
+
+	ticker := ticker{}
+	ticker.T_latest = timestamp
+	ticker.Tracks = ids
+	ticker.Processing = elapsed
+	ticker.T_start = times[0]
+	//ticker.T_stop =
+	json.NewEncoder(w).Encode(ticker)
+	//fmt.Fprintln(w, timestamp)
+}
+
+func tickerHandlerLatest(w http.ResponseWriter, r *http.Request) {
+	if timestamp == 0 {
+		fmt.Fprintln(w, "No added timestamp")
+
+	} else {
+		fmt.Fprintln(w, timestamp)
+	}
+
 }
 
 var db igcDB
 var ids []string
+var times []int
 var idCount int
 var timestamp int
+var start time.Time
+var elapsed float64
 
 func main() {
+
 	db = igcDB{}
 	db.igcs = map[string]igcFile{}
 	idCount = 0
+	timestamp = 0
+	times = []int{}
 	ids = []string{}
 	port := os.Getenv("PORT")
 	http.HandleFunc("/", router)
 	http.HandleFunc("/paragliding/api", getApi)
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
 	http.HandleFunc("/paragliding/api/ticker", tickerHandler)
+	http.HandleFunc("/paragliding/api/ticker/latest", tickerHandlerLatest)
 	http.ListenAndServe(":"+port, nil)
 }
