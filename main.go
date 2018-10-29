@@ -299,7 +299,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	strValue := fmt.Sprintf("%d", idCountwh)
 	newId := Idstr + strValue
 	idswh = append(idswh, newId)
-	idCount += 1
+	idCountwh += 1
 	whDB[newId] = wh
 	json.NewEncoder(w).Encode(newId)
 
@@ -331,6 +331,6 @@ func main() {
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
 	http.HandleFunc("/paragliding/api/ticker", tickerHandler)
 	http.HandleFunc("/paragliding/api/ticker/latest", tickerHandlerLatest)
-	http.HandleFunc("/paragliding/api/webhook/new_track", webhookHandler)
+	http.HandleFunc("/paragliding/api/webhook/new_track/", webhookHandler)
 	http.ListenAndServe(":"+port, nil)
 }
