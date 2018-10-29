@@ -240,12 +240,16 @@ func router(w http.ResponseWriter, r *http.Request) {
 }
 
 func tickerHandler(w http.ResponseWriter, r *http.Request) {
-
+	http.Header.Add(w.Header(), "content-type", "application/json")
 	ticker := ticker{}
 	ticker.T_latest = timestamp
 	ticker.Tracks = ids
 	ticker.Processing = elapsed
+	if times[0] == nil {
+		ticker.T_start = 0
+	} else {
 	ticker.T_start = times[0]
+	}
 	//ticker.T_stop =
 	json.NewEncoder(w).Encode(ticker)
 	//fmt.Fprintln(w, timestamp)
