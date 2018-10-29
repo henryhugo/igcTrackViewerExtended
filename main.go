@@ -362,6 +362,7 @@ var timestamp int
 var start time.Time
 var elapsed float64
 var whDB map[string]webhook
+var timestampSave int
 
 func main() {
 
@@ -370,7 +371,7 @@ func main() {
 	db.igcs = map[string]igcFile{}
 	idCount = 0
 	timestamp = 0
-	timestampSave := timestamp
+	timestampSave = timestamp
 	times = nil
 	ids = []string{}
 	port := os.Getenv("PORT")
