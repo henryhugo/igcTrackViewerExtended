@@ -12,6 +12,11 @@ import (
 	igc "github.com/marni/goigc"
 )
 
+type webhook struct {
+	WebhookURL      string //"webhookURL": "http://remoteUrl:8080/randomWebhookPath",
+	MinTriggerValue int    //"minTriggerValue": 2
+
+}
 type ticker struct {
 	T_latest   int      //"t_latest": <latest added timestamp>,
 	T_start    int      //"t_start": <the first timestamp of the added track>, this will be the oldest track recorded
@@ -264,14 +269,33 @@ func tickerHandlerLatest(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+func webhookHandler(w http.ResponseWriter, r *http.Request) {
+	var wh webhook
+	//TODO check correct wh format
+	err := json.NewDecoder(r.Body).Decode(&wh)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+	Idstr := "id"
+	strValue := fmt.Sprintf("%d", idCountwh)
+	newId := Idstr + strValue
+	idswh = append(idswh, newId)
+	idCount += 1
+	whDB[newId] = wh
+	json.NewEncoder(w).Encode(newId)
+
+}
 
 var db igcDB
 var ids []string
+var idswh []string
 var times []int
 var idCount int
+var idCountwh int
 var timestamp int
 var start time.Time
 var elapsed float64
+var whDB map[string]webhook
 
 func main() {
 
@@ -287,5 +311,6 @@ func main() {
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
 	http.HandleFunc("/paragliding/api/ticker", tickerHandler)
 	http.HandleFunc("/paragliding/api/ticker/latest", tickerHandlerLatest)
+	http.HandleFunc("/paragliding/api/webhook/new_track", webhookHandler)
 	http.ListenAndServe(":"+port, nil)
 }
