@@ -125,16 +125,16 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 
 					//send message to webhooks
 					payload := strings.NewReader("{\"text\": \"Ceci est publié dans #général et provient d'un robot nommé webhookbot.\"}")
-					for _, wh := range whDB {
-						client := &http.Client{Timeout: (time.Second * 30)}
-						req, err := http.NewRequest("POST", wh.WebhookURL, payload)
-						req.Header.Set("Content-Type", "application/json")
-						resp, err := client.Do(req)
-						if err != nil {
-							fmt.Print(err.Error())
-						}
-						fmt.Println(resp.Status)
+					//for _, wh := range whDB {
+					client := &http.Client{Timeout: (time.Second * 30)}
+					req, err := http.NewRequest("POST", "https://hooks.slack.com/services/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", payload)
+					req.Header.Set("Content-Type", "application/json")
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Print(err.Error())
 					}
+					fmt.Println(resp.Status)
+					//}
 					/*****************************/
 					elapsed = time.Since(start).Seconds()
 				}
