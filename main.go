@@ -279,7 +279,7 @@ func main() {
 	db.igcs = map[string]igcFile{}
 	idCount = 0
 	timestamp = 0
-	times = []int{}
+	times = nil
 	ids = []string{}
 	port := os.Getenv("PORT")
 	http.HandleFunc("/", router)
