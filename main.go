@@ -114,6 +114,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					return
 				} else {
 					timestamp = time.Now().Nanosecond()
+					clock_trigger(timestamp)
 					times = append(times, timestamp)
 					fmt.Fprintf(w, "URL : %s\n", igc.Url)
 					Idstr := "id"
@@ -289,6 +290,7 @@ func tickerHandlerLatest(w http.ResponseWriter, r *http.Request) {
 
 }
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
+	http.Header.Add(w.Header(), "content-type", "application/json")
 	parts := strings.Split(r.URL.Path, "/")
 	switch r.Method {
 	case "POST":
@@ -320,6 +322,12 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 
 			}
 		}
+	case "DELETE":
+		{
+			if pathwhID.MatchString(r.URL.Path) {
+
+			}
+		}
 	}
 }
 
@@ -344,6 +352,7 @@ func main() {
 	times = nil
 	ids = []string{}
 	port := os.Getenv("PORT")
+
 	http.HandleFunc("/", router)
 	http.HandleFunc("/paragliding/api", getApi)
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
