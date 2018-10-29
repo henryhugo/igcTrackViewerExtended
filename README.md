@@ -1,15 +1,15 @@
-## igcTrackViewerExtended
+# igcTrackViewerExtended
 
 Work realized by Hugo HENRY
 Assignement 2
 Develop an online service that will allow users to browse information about IGC files.
 
-# Features not realized
+## Features not realized
 
-MongoDB storage, GET /api/ticker/<timestamp>, problem with the clock trigger
+MongoDB storage, GET /api/ticker/timestamp, problem with the clock trigger
 
 
-# URLs
+## URLs
 
 - https://igctrackviewerextended.herokuapp.com/paragliding use GET
 
