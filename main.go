@@ -121,10 +121,10 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					ids = append(ids, newId)
 					idCount += 1
 					db.add(igc, newId)
-					json.NewEncoder(w).Encode(newId)
+					json.NewEncoder(w).Encode(whDB)
 
 					//send message to webhooks
-					payload := strings.NewReader("{\"text\": \"Ceci est publié dans #général et provient d'un robot nommé webhookbot.\"}")
+					/*payload := strings.NewReader("{\"text\": \"Ceci est publié dans #général et provient d'un robot nommé webhookbot.\"}")
 					//for _, wh := range whDB {
 					client := &http.Client{Timeout: (time.Second * 30)}
 					req, err := http.NewRequest("POST", "https://hooks.slack.com/services/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", payload)
