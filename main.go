@@ -344,6 +344,7 @@ func adminCount(w http.ResponseWriter, r *http.Request) {
 
 func adminDel(w http.ResponseWriter, r *http.Request) {
 	delCount := 0
+	ids = []string{}
 	for id, _ := range db.igcs {
 		delete(db.igcs, id)
 		delCount += 1
@@ -369,10 +370,32 @@ func main() {
 	db.igcs = map[string]igcFile{}
 	idCount = 0
 	timestamp = 0
+	timestampSave := timestamp
 	times = nil
 	ids = []string{}
 	port := os.Getenv("PORT")
-
+	ticker := time.NewTicker(10 * time.Minute)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				if timestamp != timestampSave {
+					text := "{\"text\": \"New track added)\"}"
+					payload := strings.NewReader(text)
+					for _, wh := range whDB {
+						client := &http.Client{Timeout: (time.Second * 30)}
+						req, err := http.NewRequest("POST", wh.WebhookURL, payload)
+						req.Header.Set("Content-Type", "application/json")
+						resp, err := client.Do(req)
+						if err != nil {
+							fmt.Print(err.Error())
+						}
+						fmt.Println(resp.Status)
+					}
+				}
+			}
+		}
+	}()
 	http.HandleFunc("/", router)
 	http.HandleFunc("/paragliding/api", getApi)
 	http.HandleFunc("/paragliding/api/track/", igcHandler)
