@@ -323,10 +323,32 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	case "DELETE":
 		{
 			if pathwhID.MatchString(r.URL.Path) {
-
+				idWant := parts[5]
+				for id, file := range whDB {
+					if id == idWant {
+						json.NewEncoder(w).Encode(file)
+						delete(whDB, idWant)
+					}
+				}
 			}
 		}
+	default:
+		http.NotFound(w, r)
+
 	}
+}
+
+func adminCount(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(db.Count())
+}
+
+func adminDel(w http.ResponseWriter, r *http.Request) {
+	delCount := 0
+	for id, _ := range db.igcs {
+		delete(db.igcs, id)
+		delCount += 1
+	}
+	json.NewEncoder(w).Encode(delCount)
 }
 
 var db igcDB
@@ -357,5 +379,7 @@ func main() {
 	http.HandleFunc("/paragliding/api/ticker", tickerHandler)
 	http.HandleFunc("/paragliding/api/ticker/latest", tickerHandlerLatest)
 	http.HandleFunc("/paragliding/api/webhook/new_track/", webhookHandler)
+	http.HandleFunc("/admin/api/tracks_count", adminCount)
+	http.HandleFunc("/admin/api/tracks", adminDel)
 	http.ListenAndServe(":"+port, nil)
 }
