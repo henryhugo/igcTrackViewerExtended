@@ -114,7 +114,6 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					return
 				} else {
 					timestamp = time.Now().Nanosecond()
-					clock_trigger(timestamp)
 					times = append(times, timestamp)
 					fmt.Fprintf(w, "URL : %s\n", igc.Url)
 					Idstr := "id"
