@@ -245,10 +245,10 @@ func tickerHandler(w http.ResponseWriter, r *http.Request) {
 	ticker.T_latest = timestamp
 	ticker.Tracks = ids
 	ticker.Processing = elapsed
-	if times[0] == nil {
+	if times == nil {
 		ticker.T_start = 0
 	} else {
-	ticker.T_start = times[0]
+		ticker.T_start = times[0]
 	}
 	//ticker.T_stop =
 	json.NewEncoder(w).Encode(ticker)
