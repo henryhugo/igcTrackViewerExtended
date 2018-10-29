@@ -140,7 +140,6 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 						}
 						fmt.Println(resp.Status)
 					}
-					/*****************************/
 
 				}
 
