@@ -273,9 +273,9 @@ func tickerHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		ticker.T_start = times[0]
 	}
-	//ticker.T_stop =
+
 	json.NewEncoder(w).Encode(ticker)
-	//fmt.Fprintln(w, timestamp)
+
 }
 
 func tickerHandlerLatest(w http.ResponseWriter, r *http.Request) {
