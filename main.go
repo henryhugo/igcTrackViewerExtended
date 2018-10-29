@@ -282,7 +282,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	newId := Idstr + strValue
 	idswh = append(idswh, newId)
 	idCount += 1
-	//whDB[newId] = wh
+	whDB[newId] = wh
 	json.NewEncoder(w).Encode(newId)
 
 }
@@ -301,6 +301,7 @@ var whDB map[string]webhook
 func main() {
 
 	db = igcDB{}
+	whDB = map[string]webhook{}
 	db.igcs = map[string]igcFile{}
 	idCount = 0
 	timestamp = 0
