@@ -104,6 +104,7 @@ func igcHandler(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				var igc igcFile
+				
 				//TODO check correct igc URL
 				err := json.NewDecoder(r.Body).Decode(&igc)
 				if err != nil {
